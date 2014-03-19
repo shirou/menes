@@ -1,0 +1,6 @@
+boto
+ltsvlogger
+Sphinx
+tornado
+ujson
+requests

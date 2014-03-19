@@ -1,0 +1,67 @@
+---
+- name: install python-selinux
+  sudo: yes
+  yum: pkg=libselinux-python state=latest
+- name: install dependency
+  sudo: yes
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - python
+    - python-pip
+    - python-dev
+    - gcc
+    - libpng12-dev
+    - libjpeg-dev
+    - texlive
+    - texlive-extra-utils
+    - texlive-fonts-recommended
+    - texlive-latex-base
+    - texlive-latex-extra
+    - texlive-math-extra
+    - texlive-pictures
+    - texlive-pstricks
+    - texlive-lang-cjk
+    - tipa
+    - ttf-aenigma
+    - ttf-anonymous-pro
+    - libfreetype6
+    - libfreetype6-dev
+    - dvi2ps-fontdata-ja
+    - fonts-freefont-ttf
+    - fonts-ipafont-gothic
+    - fonts-ipafont-mincho
+    - fonts-liberation
+    - fonts-mgopen
+    - fonts-takao-gothic
+    - fonts-takao-mincho
+    - fonts-takao-pgothic
+    - fonts-vlgothic
+#      - fonts-mikachan
+#      - fonts-moe-standard-kai
+#      - fonts-moe-standard-song
+#      - fonts-larabie-deco
+#      - fonts-larabie-straight
+#      - fonts-larabie-uncommon
+- name: link to lib
+  sudo: yes
+  shell: |
+    sudo ln -sf /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+    sudo ln -sf /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
+    sudo ln -sf /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+- name: install sphinx
+  sudo: yes
+  pip: name={{ item }}
+  with_items:
+    - rq
+    - ltsvlogger
+    - ujson
+    - redis
+    - requests
+    - sphinx
+    - PIL
+    - pillow
+    - sphinxcontrib-blockdiag
+    - sphinxcontrib-jinjadomain
+    - sphinxcontrib-golangdomain
+    - sphinxcontrib-phpdomain
+    - sphinxcontrib-bibtex

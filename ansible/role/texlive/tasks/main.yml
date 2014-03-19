@@ -1,0 +1,13 @@
+- name: perl modules
+  apt: name={{ items }} state=installed
+  with_items:
+    - perl-modules
+    - wget
+- name: get install-tl
+  get_url: url=http://mirror.unl.edu/ctan/systems/texlive/tlnet/install-tl-unx.tar.gz dest=/tmp/install-tl-unx.tar.gz
+- name: unarchive install-tl
+  command: chdir=/tmp tar xfz /tmp/install-tl-unx.tar.gz
+- name: get
+  shell: cd /tmp/install-tl-* &&
+
+

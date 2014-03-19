@@ -1,0 +1,28 @@
+- name: install
+  apt: name={{ item }} state=present
+  with_items:
+    - make
+    - gcc
+    - git
+    - python-dev
+    - libjpeg8
+    - libfreetype6
+#- name: link libjpeg, libfreetype, libz 
+#  shell: link.sh
+- name: install python softwares
+  pip: name={{ item }} extra_args='--pre' state=present
+  with_items:
+    - pillow
+    - blockdiag
+    - seqdiag
+    - sphinxcontrib-blockdiag
+    - sphinxcontrib-seqdiag
+    - sphinxcontrib-golangdomain
+    - sphinxcontrib-erlangdomain
+    - sphinxcontrib-httpdomain
+    - sphinxcontrib-github
+    - sphinxcontrib-googlechart
+    - sphinxcontrib-scaladomain
+    - sphinxcontrib-phpdomain
+    - sphinxcontrib-coffee
+
