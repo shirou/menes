@@ -30,11 +30,11 @@ class FinishedHandler(tornado.web.RequestHandler):
         conf = self.application.settings['config']
         log = ltsvlogger.LTSVLoggerAdapter(logging.getLogger())
 
-        email = self.get_argument("email", None),
-        token = self.get_argument("token", None),
+        email = self.get_argument("email", None)
+        token = self.get_argument("token", None)
         result = self.get_argument("result", None)
 
-        m = {"email": email, "token": token, "result": result, "t": type(result)}
+        m = {"email": email, "token": token, "result": result}
         log.info("finished accepted", **m)
 
         if email is None:
@@ -45,17 +45,19 @@ class FinishedHandler(tornado.web.RequestHandler):
             self.send_error(403)
             return
 
+        if result == "True":
+            suffix = ".pdf"
+        else:
+            suffix = ".txt"
+
         # Saving to tempfile
         fileinfo = self.request.files['file'][0]
-        path = tempfile.mkdtemp(dir=conf['app']['htdocroot'])
-        fname = token + ".pdf"
-        fh = open(os.path.join(path, fname),  'wb')
+        path = os.path.join(conf['app']['download_root'], token + suffix)
+        fh = open(path,  'wb')
         fh.write(fileinfo['body'])
 
-        if result == "True":
-            pass  # use success template
-        else:
-            pass  # use failed template
+        m = {"path": path}
+        log.info("save to tempfile", **m)
 
         result_encoded = json.dumps((True, "success"))
         self.write(result_encoded)

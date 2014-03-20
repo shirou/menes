@@ -46,7 +46,6 @@ class Worker(object):
 
                 try:
                     if len(msgs) == 0:
-                        self.log.error("sqs message queue is empty but unblocked.")
                         continue
                     m = msgs[0]
                     req = json.loads(m.get_body())
@@ -57,9 +56,9 @@ class Worker(object):
                     self.log.error("parse sqs message failed", **m)
                     continue
 
-                self.make_pdf(req, self.conf)
+                ret = self.make_pdf(req, self.conf)
 
-                queue.delete_message(msgs[0])
+                self.queue.delete_message(msgs[0])
 
             except Exception, e:
                 import traceback
@@ -69,21 +68,15 @@ class Worker(object):
                 continue
 
     def make_pdf(self, req, conf):
-
         url = "/".join([conf['worker']['menes_url'], "download", req['url']])
-        self.log.error("uncaught exception", {"url": url})
-
 
         zipfile_path = self.get_zipfile(url, conf['app']['internaltoken'],
                                         conf['worker']['build_root'])
+        if zipfile_path is False:
+            return False
 
         path = self.extract(zipfile_path, conf['worker']['build_root'])
-        status, ret = self.do_sphinx(path, req, conf)
-
-        if status is True:
-            pdf_path = ""
-        else:
-            pdf_path = ret
+        status, pdf_path = self.do_sphinx(path, req, conf)
 
         finished_url = "/".join([conf['worker']['menes_url'], "finished"])
         m = {"url": finished_url}
@@ -97,31 +90,56 @@ class Worker(object):
 
         if "command" in req:
             # for security reason, only latexpdfja or latexpdf can be accepted
-            if "latexpdfja" in req['command']:
-                command = "make latexpdfja"
-            else:
+            if "latexpdf" == req['command']:
                 command = "make latexpdf"
+            else:
+                command = "make latexpdfja"
         else:
-            command = "make latexpdf"
+            command = "make latexpdfja"
 
+        m = {"root": root, "command": command}
+        self.log.info("do_sphinx started", **m)
         args = shlex.split(command)
-        p = subprocess.Popen(args, cwd=root, stdout=subprocess.PIPE)
-
+        p = subprocess.Popen(args, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
         rc = p.returncode
-        m = {"retcode": rc}
-        self.log.debug("do_sphinx finished", **m)
 
-        if p != 0:
+        m = {"retcode": rc, "t": type(rc)}
+        self.log.info("do_sphinx finished", **m)
+
+        if rc != 0:
             error_retfile = tempfile.mkstemp(prefix="buildlog_")[1]
-            m = {"retcode": rc, "error_retfile": error_retfile, "out": out}
+            m = {"retcode": rc, "error_retfile": error_retfile}
+            with open(error_retfile, "w") as fp:
+                fp.write(out)
+
             self.log.info("do_sphinx finished but failed", **m)
             return (False, error_retfile)
 
-        if os.path.exists(os.path.join(root, "build", "latex", "pdf")):
-            pass
+        pdfpath = self.find_result_pdf(root)
 
+        if pdfpath is False:
+            m = {"root": root}
+            self.log.error("could not find generated pdf", **m)
+            return (False, "")
         return (True, pdfpath)
+
+    def find_result_pdf(self, root):
+        nonsep = os.path.join(root, "build", "latex")
+        sep = os.path.join(root, "_build", "latex")
+        if os.path.exists(sep):
+            d = sep
+        elif os.path.exists(nonsep):
+            d = nonsep
+        else:
+            self.log.error("could not find build dir")
+            return False
+
+        for filename in os.listdir(d):
+            if filename.endswith(".pdf"):
+                return os.path.join(d, filename)
+        return False
+
 
     def push(self, pdf_path, url, email, token, status):
         files = {'file': open(pdf_path, 'rb')}
@@ -139,6 +157,12 @@ class Worker(object):
         self.log.debug("get_zipfile", **m)
         r = requests.get(url, params=p)
 
+        if r.status_code != 200:
+            m = {"url": url, "token": token, "extract_root": extract_root,
+                 "statuscode": r.status_code}
+            self.log.warning("get_zipfile failed", **m)
+            return False
+
         urlpath = urlparse.urlparse(url).path
         filename = os.path.join(extract_root, os.path.basename(urlpath))
 
@@ -155,7 +179,6 @@ class Worker(object):
     def extract(self, zipfile_path, extract_root):
         dest_dir = tempfile.mkdtemp(dir=extract_root)
 
-        self.log.error(zipfile_path)
         with zipfile.ZipFile(zipfile_path) as zf:
             zf.extractall(dest_dir)
 
