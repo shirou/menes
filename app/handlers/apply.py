@@ -63,7 +63,7 @@ class ApplyHandler(tornado.web.RequestHandler):
             fileinfo = self.request.files['file'][0]
 
             m = hashlib.md5()
-            m.update("".join([datetime.datetime.now.isoformat(),
+            m.update("".join([datetime.datetime.now().isoformat(),
                               email,
                               str(random.random())]))
             md5 = m.hexdigest()
