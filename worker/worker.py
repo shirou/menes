@@ -42,9 +42,12 @@ class Worker(object):
     def main_loop(self):
         while True:
             try:
-                msgs = q.get_messages()
+                msgs = self.queue.get_messages()
 
                 try:
+                    if len(msgs) == 0:
+                        self.log.error("sqs message queue is empty but unblocked.")
+                        continue
                     m = msgs[0]
                     req = json.loads(m.get_body())
                 except ValueError, e:
@@ -66,13 +69,27 @@ class Worker(object):
                 continue
 
     def make_pdf(self, req, conf):
-        zipfile_path = self.get_zipfile(req['url'], conf['app']['internaltoken'],
+
+        url = "/".join([conf['worker']['menes_url'], "download", req['url']])
+        self.log.error("uncaught exception", {"url": url})
+
+
+        zipfile_path = self.get_zipfile(url, conf['app']['internaltoken'],
                                         conf['worker']['build_root'])
 
-        path = self.extract(zipfile_path, conf['worker'['build_root']])
+        path = self.extract(zipfile_path, conf['worker']['build_root'])
         status, ret = self.do_sphinx(path, req, conf)
-        push(pdf_path, conf['worker']['finished_url'],
-             req['email'], req['token'])
+
+        if status is True:
+            pdf_path = ""
+        else:
+            pdf_path = ret
+
+        finished_url = "/".join([conf['worker']['menes_url'], "finished"])
+        m = {"url": finished_url}
+        self.log.info("finished", **m)
+        self.push(pdf_path, finished_url,
+                  req['email'], req['token'], status)
 
     def do_sphinx(self, root, req, conf):
         if os.path.exists(root) is False or os.path.isdir(root) is False:
@@ -88,11 +105,17 @@ class Worker(object):
             command = "make latexpdf"
 
         args = shlex.split(command)
-        p = subprocess.call(args, cwd=root)
-        print "retcode", p
+        p = subprocess.Popen(args, cwd=root, stdout=subprocess.PIPE)
+
+        out, err = p.communicate()
+        rc = p.returncode
+        m = {"retcode": rc}
+        self.log.debug("do_sphinx finished", **m)
 
         if p != 0:
-            error_retfile = "/"
+            error_retfile = tempfile.mkstemp(prefix="buildlog_")[1]
+            m = {"retcode": rc, "error_retfile": error_retfile, "out": out}
+            self.log.info("do_sphinx finished but failed", **m)
             return (False, error_retfile)
 
         if os.path.exists(os.path.join(root, "build", "latex", "pdf")):
@@ -100,17 +123,20 @@ class Worker(object):
 
         return (True, pdfpath)
 
-    def push(self, pdf_path, url, email, token):
+    def push(self, pdf_path, url, email, token, status):
         files = {'file': open(pdf_path, 'rb')}
 
         p = {'token': token,
-             'email': email}
+             'email': email,
+             'result': status}
         r = requests.post(url, files=files, params=p)
 
     def get_zipfile(self, url, token, extract_root):
         chunk_size = 1024
 
         p = {'token': token}
+        m = {"url": url, "token": token, "extract_root": extract_root}
+        self.log.debug("get_zipfile", **m)
         r = requests.get(url, params=p)
 
         urlpath = urlparse.urlparse(url).path
@@ -128,6 +154,8 @@ class Worker(object):
 
     def extract(self, zipfile_path, extract_root):
         dest_dir = tempfile.mkdtemp(dir=extract_root)
+
+        self.log.error(zipfile_path)
         with zipfile.ZipFile(zipfile_path) as zf:
             zf.extractall(dest_dir)
 
