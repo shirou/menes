@@ -43,6 +43,7 @@ class ApplyHandler(tornado.web.RequestHandler):
 
         email = self.get_argument("email", None)
         token = self.get_argument("token", "")
+        language = self.get_argument("language", "")
         command = self.get_argument("command", "latexpdf")
 
         if email is None or not EMAIL_REGEX.match(email):

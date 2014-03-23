@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import urllib
+import zipfile
+import tempfile
 import os
 
 from sphinx.builders import Builder
@@ -20,37 +22,47 @@ class MenesWriter(writers.Writer):
         self.builder = builder
         writers.Writer.__init__(self)
 
-    def getTitle(self, doctree):
-        ''' return first text node as Title'''
-        for node in doctree.traverse(Text):
-            t = node.astext()
-            if t:
-                return t
+    def makezip(self, fileroot):
+        fd, dstpath = tempfile.mkstemp(prefix="menes_zip-", suffix=".zip")
+        os.close(fd)
+
+        zf = zipfile.ZipFile(dstpath, "w", zipfile.ZIP_DEFLATED)
+
+        for dirname, subdirs, files in os.walk(fileroot):
+            # skip build directory
+            if "_build" in dirname or "build" in dirname:
+                continue
+            # remove top directory name
+            zf.write(dirname, dirname.replace(fileroot, ""))
+            for filename in files:
+                fname = os.path.join(dirname, filename)
+                zf.write(fname, fname.replace(fileroot, ""))
+
+        zf.close()
+        return dstpath
 
     def write(self, docname, doctree, conf):
-        title = self.getTitle(doctree)
+        zipfile = self.makezip(conf['root'])
+
         params = urllib.urlencode({
             'email': conf['email'],
-            'lang': conf['lang'],
+            'language': conf['language'],
+            'command': conf['command'],
             })
 
-        url = conf['server_url'] + '/' + conf['_index']
-        ret = urllib.urlopen(url, params).read()
+        url = conf['menes_url']
 
-        result = simplejson.loads(ret)
+        files = {'file': open(zipfile, 'rb')}
+        r = requests.post(url, files=files, params=params)
 
-        if 'ok' not in result or result['ok'] is not True:
-            print "Error"
-            print result
-
+        os.remove(zipfile)
 
 class MenesBuilder(Builder):
     name = 'menesbuilder'
     format = 'latexpdf'
-    out_suffix = ''
 
     def get_outdated_docs(self):
-        return 'pass'
+        return self.env.found_docs
 
     def get_target_uri(self, docname, typ=None):
         return ''
@@ -59,10 +71,16 @@ class MenesBuilder(Builder):
         self.writer = MenesWriter(self)
 
     def write_doc(self, docname, doctree):
+        # use 2 level upper from outdir as root dir
+        root = os.path.abspath(os.path.join(self.app.outdir,
+                                            "..",
+                                            ".."))
         conf = {
-            'server_url': self.config.menes_url,
+            'menes_url': self.config.menes_url,
+            'command': self.config.menes_command,
             'email': self.config.menes_email,
-            'lang': self.config.lang
+            'language': self.config.language,
+            'root': root
             }
 
         self.writer.write(docname, doctree, conf)
@@ -70,7 +88,7 @@ class MenesBuilder(Builder):
 
 def setup(app):
     app.add_config_value('menes_url', None, '')
-    app.add_config_value('menes_command', None, '')
+    app.add_config_value('menes_command', None, 'latexpdfja')
     app.add_config_value('menes_email', None, '')
 
     app.add_builder(MenesBuilder)

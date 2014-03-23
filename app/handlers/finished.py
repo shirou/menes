@@ -22,11 +22,11 @@ class FinishedHandler(tornado.web.RequestHandler):
     def initialize(self, conf):
         self.ses = self.connect_ses(conf)
 
-    def create_mail_body(self, email, url, lang="en", result="True"):
+    def create_mail_body(self, email, url, language="en", result="True"):
         if result == "True":
-            fname = lang + ".success.j2"
+            fname = language + ".success.j2"
         else:
-            fname = lang + ".failed.j2"
+            fname = language + ".failed.j2"
 
         t = os.path.join(os.path.dirname(__file__), "..", "mailtmpl", fname)
 
@@ -59,7 +59,7 @@ class FinishedHandler(tornado.web.RequestHandler):
 
         email = self.get_argument("email", None)
         token = self.get_argument("token", None)
-        lang = self.get_argument("lang", "en")
+        language = self.get_argument("language", "en")
         result = self.get_argument("result", None)
 
         m = {"email": email, "token": token, "result": result}
@@ -91,7 +91,7 @@ class FinishedHandler(tornado.web.RequestHandler):
 
         url = os.path.join(conf['worker']['menes_url'], "download", token + suffix)
 
-        body = self.create_mail_body(email, url, lang, result)
+        body = self.create_mail_body(email, url, language, result)
 
         fromaddr = conf['app']['from_addr']
         self.send_email(conn, fromaddr, email, body)
