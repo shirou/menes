@@ -23,25 +23,35 @@ builder setup
    ::
 
       menes_email = "your_mailaddress@example.com"
-      menes_command = "make latex"
 
-   if you want to use your own menes server, set this
+   If you want to use your own menes server, set this(last "/apply" is
+   required)
 
    ::
 
-      menes_url = "http://your.menes.eample.com/menes/root/"
+      menes_url = "http://your.menes.eample.com/menes/root/apply"
+
+   Default serverside command is "make latexpdf" but if you want to
+   run "make latexpdfja", set menes_command.
+
+   ::
+
+      menes_command = "latexpdfja"
 
 3. build using menesbuilder
 
    ::
 
-      % sphinx-build -b menesbuilder
+      % sphinx-build -b menesbuilder -d _build/doctrees . _build/html
 
 3. wait.
 
 4. you will receive an email which includes PDF link
 
-   notice: usually PDF link will be deleted shortely.
+   notice: PDF will be deleted shortely about 1 week.
+
+5. if build failed, the fail log will be emailed.
+
 
 web and worker setup
 +++++++++++++++++++++++++++++
@@ -60,7 +70,6 @@ You need an Amazon account to use SQS and SES.
      % ansible-playbook -i inventory.ini menes_worker.yml
 
 
-
 Architecture
 --------------
 
@@ -73,7 +82,12 @@ Architecture
   builder --HTTP POST--> Web --SQS-->
     worker --HTTP POST--> Web --SES--> You
 
+Naming
+--------
+
+http://en.wikipedia.org/wiki/Menes
+
 License
 -----------------
 
-Apache License
+2-clause BSD license
