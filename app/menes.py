@@ -21,6 +21,7 @@ import tornado.gen
 from handlers.apply import ApplyHandler
 from handlers.finished import FinishedHandler
 from handlers.download import ZipDownloadHandler
+from handlers.webhook import WebHookHandler
 
 
 DEBUG = True
@@ -58,6 +59,7 @@ def get_application(conf, logger):
         (r"/finished", FinishedHandler, dict(conf=conf)),
         (r"/download/((.*).pdf)", tornado.web.StaticFileHandler, {"path": conf['app']['download_root']}),
         (r"/download/((.*).zip)", ZipDownloadHandler),
+        (r"/webhook", WebHookHandler),
         (r"/", tornado.web.RedirectHandler, {"url": "https://pypi.python.org/pypi/sphinxcontrib-menesbuilder/"}),
     ]
 
