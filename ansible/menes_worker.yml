@@ -2,6 +2,6 @@
 - hosts: Worker
   sudo: yes
   roles:
-     - texlive
-#    - bobbyrenwick.pip
-#    - menes_worker
+    - texlive
+    - bobbyrenwick.pip
+    - menes_worker

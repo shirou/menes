@@ -1,0 +1,11 @@
+- name: create supervisord log directory
+  file: path=/var/log/supervisord/ state=directory owner={{ user_name }}
+- name: create supervisord conf directory
+  file: path=/etc/supervisor state=directory
+- name: copy supervisord init script
+  template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
+- name: copy supervisord init script
+  copy: src=supervisord dest=/etc/init.d/supervisord mode=0755
+  notify: restart menes server
+- name: start supervisord
+  service: name=supervisord state=started
