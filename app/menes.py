@@ -147,7 +147,7 @@ def parse_configfile(path):
 def main():
     args = parse_options()
     conf = parse_configfile(args.file[0])
-    conf['port'] = args.port[0]
+    conf['app']['port'] = args.port[0]
 
     ensure_directory(conf['app']['log_directory'])
     ensure_directory(conf['app']['download_root'])
