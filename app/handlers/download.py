@@ -35,7 +35,8 @@ class ZipDownloadHandler(tornado.web.RequestHandler):
         # zip file is only downloadable from internal request with auth token
         if fileext == ".zip":
             if token is None or token != validtoken:
-                log.info("zip fileext selected but token is none or invalid")
+                m = {"token": token}
+                log.info("zip fileext selected but token is none or invalid", **m)
                 self.send_error(403)
                 return
 

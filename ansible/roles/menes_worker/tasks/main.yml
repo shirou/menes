@@ -7,7 +7,7 @@
     - python-dev
     - libjpeg8
     - libfreetype6
-#- name: link libjpeg, libfreetype, libz 
+#- name: link libjpeg, libfreetype, libz
 #  shell: link.sh
 - name: install python softwares
   pip: name={{ item }} extra_args='--pre' state=present

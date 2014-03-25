@@ -1,0 +1,9 @@
+---
+- hosts: Server
+  sudo: yes
+  vars:
+    - user_name: worker
+    - menes_path: /home/worker/menes/menes/app/menes.py
+    - menes_conf_path: /home/worker/menes/conf/menes.ini
+  roles:
+    - menes_server
