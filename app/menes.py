@@ -117,6 +117,9 @@ def parse_options():
     parser.add_argument('-c', '--conf', metavar="CONFFILE", dest="file",
                         type=str, nargs=1, help='config file path',
                         required=True)
+    parser.add_argument('-p', '--port', metavar="PORT", dest="port",
+                        type=int, nargs=1, help='port number',
+                        required=True)
 
     return parser.parse_args()
 
@@ -144,6 +147,7 @@ def parse_configfile(path):
 def main():
     args = parse_options()
     conf = parse_configfile(args.file[0])
+    conf['port'] = args.port[0]
 
     ensure_directory(conf['app']['log_directory'])
     ensure_directory(conf['app']['download_root'])
