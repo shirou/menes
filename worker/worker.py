@@ -68,7 +68,7 @@ class Worker(object):
                 continue
 
     def make_pdf(self, req, conf):
-        url = "/".join([conf['worker']['menes_url'], "download", req['url']])
+        url = "/".join([conf['worker']['menes_url'], "api", "download", req['url']])
 
         zipfile_path = self.get_zipfile(url, conf['app']['internaltoken'],
                                         conf['worker']['build_root'])
@@ -78,7 +78,7 @@ class Worker(object):
         path = self.extract(zipfile_path, conf['worker']['build_root'])
         status, pdf_path = self.do_sphinx(path, req, conf)
 
-        finished_url = "/".join([conf['worker']['menes_url'], "finished"])
+        finished_url = "/".join([conf['worker']['menes_url'], "api", "finished"])
         m = {"url": finished_url}
         self.log.info("finished", **m)
         self.push(pdf_path, finished_url,
