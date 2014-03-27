@@ -99,12 +99,19 @@ class Worker(object):
 
         m = {"root": root, "command": command}
         self.log.info("do_sphinx started", **m)
+
+        # append texlive_path to PATH
+        env = os.environ.copy()
+        env["PATH"] += ":" + conf['worker']['texlive_bin_path']
+
         args = shlex.split(command)
-        p = subprocess.Popen(args, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(args, cwd=root, 
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=env)
         out, err = p.communicate()
         rc = p.returncode
 
-        m = {"retcode": rc, "t": type(rc)}
+        m = {"retcode": rc}
         self.log.info("do_sphinx finished", **m)
 
         if rc != 0:
