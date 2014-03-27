@@ -52,7 +52,7 @@ class MenesBuilder(Builder):
             'command': conf['command'],
             })
 
-        url = conf['menes_url']
+        url = conf['menes_url'].rstrip("/") + "/apply"
 
         self.info("Posting to {}".format(url))
 
@@ -86,8 +86,8 @@ class MenesBuilder(Builder):
 
 
 def setup(app):
-    app.add_config_value('menes_url', 'http://menes.tdoc.info/apply', '')
-    app.add_config_value('menes_command', 'latexpdfja', '')
+    app.add_config_value('menes_url', 'http://menes-pdf.info', '')
+    app.add_config_value('menes_command', 'latexpdf', '')
     app.add_config_value('menes_email', None, '')
 
     app.add_builder(MenesBuilder)
