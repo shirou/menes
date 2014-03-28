@@ -16,7 +16,7 @@ classifiers = [
 
 setup(
     name='sphinxcontrib-menesbuilder',
-    version="0.0.1",
+    version="0.1dev1",
     description='menesbuilder is a Sphinx extension for menes PDF generates web application',
     long_description=open("README.rst").read(),
     classifiers=classifiers,
@@ -24,7 +24,7 @@ setup(
     author='WAKAYAMA shirou',
     author_email='shirou.faw at gmail.com',
     zip_safe=False,
-    url='http://bitbucket.org/r_rudi/menes',
+    url='http://github/shirou/menes',
     download_url='http://pypi.python.org/pypi/sphinxcontrib-menesbuilder',
     license='BSD License',
     packages=find_packages(),

@@ -1,4 +1,0 @@
-- hosts: worker
-  user: root
-  roles:
-    - sphinx_worker

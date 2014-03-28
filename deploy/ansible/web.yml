@@ -1,4 +1,0 @@
-- hosts: web
-  user: root
-  roles:
-    - web

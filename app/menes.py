@@ -55,12 +55,11 @@ def log_func(handler):
 
 def get_application(conf, logger):
     handlers = [
-        (r"/apply", ApplyHandler, dict(conf=conf)),
-        (r"/finished", FinishedHandler, dict(conf=conf)),
-        (r"/download/((.*).pdf)", tornado.web.StaticFileHandler, {"path": conf['app']['download_root']}),
-        (r"/download/((.*).zip)", ZipDownloadHandler),
-        (r"/webhook", WebHookHandler),
-        (r"/", tornado.web.RedirectHandler, {"url": "https://pypi.python.org/pypi/sphinxcontrib-menesbuilder/"}),
+        (r"/api/apply", ApplyHandler, dict(conf=conf)),
+        (r"/api/finished", FinishedHandler, dict(conf=conf)),
+        (r"/api/download/((.*).pdf)", tornado.web.StaticFileHandler, {"path": conf['app']['download_root']}),
+        (r"/api/download/((.*).zip)", ZipDownloadHandler),
+        (r"/api/webhook", WebHookHandler),
     ]
 
     settings = {

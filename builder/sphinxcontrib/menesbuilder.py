@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import sys
 import urllib
 import zipfile
 import tempfile
-import os
 
 from sphinx.builders import Builder
 from sphinx.util.osutil import ensuredir, os_path
@@ -17,10 +18,10 @@ from docutils.nodes import Text
 
 import requests
 
-class MenesWriter(writers.Writer):
-    def __init__(self, builder):
-        self.builder = builder
-        writers.Writer.__init__(self)
+
+class MenesBuilder(Builder):
+    name = 'menesbuilder'
+    format = 'latexpdf'
 
     def makezip(self, fileroot):
         fd, dstpath = tempfile.mkstemp(prefix="menes_zip-", suffix=".zip")
@@ -41,8 +42,9 @@ class MenesWriter(writers.Writer):
         zf.close()
         return dstpath
 
-    def write(self, docname, doctree, conf):
+    def post(self, conf):
         zipfile = self.makezip(conf['root'])
+        self.info("making zipfile of {}".format(conf['root']))
 
         params = urllib.urlencode({
             'email': conf['email'],
@@ -50,31 +52,28 @@ class MenesWriter(writers.Writer):
             'command': conf['command'],
             })
 
-        url = conf['menes_url']
+        url = conf['menes_url'].rstrip("/") + "/apply"
+
+        self.info("Posting to {}".format(url))
 
         files = {'file': open(zipfile, 'rb')}
         r = requests.post(url, files=files, params=params)
 
         os.remove(zipfile)
 
-class MenesBuilder(Builder):
-    name = 'menesbuilder'
-    format = 'latexpdf'
+    def build(self, docnames, summary=None, method='update'):
+        if self.config.menes_email is None:
+            self.warn("you must set menes_email in conf.py")
+            sys.exit(1)
 
-    def get_outdated_docs(self):
-        return self.env.found_docs
+        root = os.path.abspath(self.app.outdir)
 
-    def get_target_uri(self, docname, typ=None):
-        return ''
+        files = os.listdir(root)
+        if "Makefile" not in files:
+            self.warn("Please specify directory root where Makefile exists. \n  ex: sphinx-build -b menesbuilder source ."
+            )
+            sys.exit(1)
 
-    def prepare_writing(self, docnames):
-        self.writer = MenesWriter(self)
-
-    def write_doc(self, docname, doctree):
-        # use 2 level upper from outdir as root dir
-        root = os.path.abspath(os.path.join(self.app.outdir,
-                                            "..",
-                                            ".."))
         conf = {
             'menes_url': self.config.menes_url,
             'command': self.config.menes_command,
@@ -87,8 +86,8 @@ class MenesBuilder(Builder):
 
 
 def setup(app):
-    app.add_config_value('menes_url', None, '')
-    app.add_config_value('menes_command', None, 'latexpdfja')
+    app.add_config_value('menes_url', 'http://menes-pdf.info', '')
+    app.add_config_value('menes_command', 'latexpdf', '')
     app.add_config_value('menes_email', None, '')
 
     app.add_builder(MenesBuilder)

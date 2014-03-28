@@ -24,12 +24,11 @@ builder setup
 
       menes_email = "your_mailaddress@example.com"
 
-   If you want to use your own menes server, set this(last "/apply" is
-   required)
+   If you want to use your own menes server, set like this.
 
    ::
 
-      menes_url = "http://your.menes.eample.com/menes/root/apply"
+      menes_url = "http://your.menes.eample.com/menes/root"
 
    Default serverside command is "make latexpdf" but if you want to
    run "make latexpdfja", set menes_command.
@@ -42,15 +41,22 @@ builder setup
 
    ::
 
-      % sphinx-build -b menesbuilder -d _build/doctrees . _build/html
+      % sphinx-build -b menesbuilder -d _build/doctrees . .
 
-3. wait.
+      or if you separete source dire,
 
-4. you will receive an email which includes PDF link
+      % sphinx-build -b menesbuilder source .
+
+   where first "." is source dir and last "." specify where is the
+   root directory.
+
+4. wait.
+
+5. you will receive an email which includes PDF link
 
    notice: PDF will be deleted shortely about 1 week.
 
-5. if build failed, the fail log will be emailed.
+6. if build failed, the fail log will be emailed.
 
 
 web and worker setup
