@@ -52,7 +52,7 @@ class MenesBuilder(Builder):
             'command': conf['command'],
             })
 
-        url = conf['menes_url'].rstrip("/") + "/apply"
+        url = conf['menes_url'].rstrip("/") + "/api/apply"
 
         self.info("Posting to {}".format(url))
 
@@ -82,7 +82,12 @@ class MenesBuilder(Builder):
             'root': root
             }
 
-        self.writer.write(docname, doctree, conf)
+        self.post(conf)
+
+    def get_outdated_docs(self):
+        return self.env.found_docs
+    def get_target_uri(self, docname, typ=None):
+        return ''
 
 
 def setup(app):
