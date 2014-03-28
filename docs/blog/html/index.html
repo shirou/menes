@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Generate PDF">
         <meta name="viewport" content="width=device-width">
-        <title>Sitemap &mdash; mens-pdf</title>
+        <title>Home &mdash; mens-pdf</title>
             <link rel="stylesheet" href="_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="_static/main.css" type="text/css">
@@ -54,11 +54,11 @@
 
       <div id="container"><header>
             <hgroup>
-              <h1><a href="index.html">mens-pdf</a></h1><h2>Generate PDF just a &#34;sphinx-build&#34;</h2></hgroup>
+              <h1><a href="#">mens-pdf</a></h1><h2>Generate PDF just a &#34;sphinx-build&#34;</h2></hgroup>
           </header>
       <nav>
             <ul><li class="main-nav">
-                  <a href="index.html">Home</a>
+                  <a href="#">Home</a>
                 </li>
               <li class="main-nav">
                   <a href="pages/whatsthis.html">what&#39;s this?</a>
@@ -67,23 +67,42 @@
                   <a href="pages/extensions.html">Installed extensions</a>
                 </li>
               </ul>
-          </nav><div class="main-container"><div class="main wrapper clearfix"><article>
-    <div class="section" id="sitemap">
-<h1>Sitemap</h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="2014/03/27/initial.html">Menes PDF is released</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pages/whatsthis.html">what&#8217;s this?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pages/extensions.html">Installed extensions</a></li>
-</ul>
+          </nav><div class="main-container"><div class="main wrapper clearfix"><article><div class="timestamp postmeta">
+            <span>March 27, 2014</span>
+        </div>
+        <div class="section" id="menes-pdf-is-released">
+<h1><a href="2014/03/27/initial.html">Menes PDF is released</a></h1>
+<p>menes is a web application which generates a PDF from your Sphinx
+project.</p>
+<p>You never need to install a tex environment!</p>
+<div class="section" id="how-to-use">
+<h2>How to Use</h2>
+<p>You just install the sphinx extension via pip,</p>
+<div class="highlight-python"><div class="highlight"><pre>% pip install sphinxcontrib-menesbuilder
+</pre></div>
+</div>
+<p>And add two lines to your conf.py.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s">'sphinxcontrib.menesbuilder'</span><span class="p">]</span>
+<span class="n">menes_email</span> <span class="o">=</span> <span class="s">&quot;your_mailaddress@example.com&quot;</span>
+</pre></div>
+</div>
+<p>Then, type this!</p>
+<div class="highlight-python"><div class="highlight"><pre>% cd &lt;path to top of your sphinx project&gt;
+% sphinx-build -b menesbuilder source .
+</pre></div>
+</div>
+<p>After while, you receive e-mail which includes PDF download URL.</p>
 </div>
 </div>
-
-    <div class="postmeta">
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by menes</span>
+        </div>
         
         
-        
-        </div></article><aside class="sidebar"><section><div class="widget">
+        </div><div class="archive_link">
+        <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
+    </div></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
             <a href="2014/03/27/initial.html">Menes PDF is released</a>

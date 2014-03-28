@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>mens-pdf</title>
+        <link>http://menes-pdf.info/</link>
+        <description>Generate PDF just a "sphinx-build"</description>
+        <language>en-us</language>
+        <pubDate>Thu, 27 Mar 2014 00:00:00 +0900</pubDate>
+        
+        <item>
+            <link>http://menes-pdf.info/2014/03/27/initial.html</link>
+            <guid>http://menes-pdf.info/2014/03/27/initial.html</guid>
+            <title><![CDATA[Menes PDF is released]]></title>
+            <description><![CDATA[<div class="section" id="menes-pdf-is-released">
+<h1>Menes PDF is released</h1>
+<p>menes is a web application which generates a PDF from your Sphinx
+project.</p>
+<p>You never need to install a tex environment!</p>
+<div class="section" id="how-to-use">
+<h2>How to Use</h2>
+<p>You just install the sphinx extension via pip,</p>
+<div class="highlight-python"><div class="highlight"><pre>% pip install sphinxcontrib-menesbuilder
+</pre></div>
+</div>
+<p>And add two lines to your conf.py.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s">'sphinxcontrib.menesbuilder'</span><span class="p">]</span>
+<span class="n">menes_email</span> <span class="o">=</span> <span class="s">&quot;your_mailaddress@example.com&quot;</span>
+</pre></div>
+</div>
+<p>Then, type this!</p>
+<div class="highlight-python"><div class="highlight"><pre>% cd &lt;path to top of your sphinx project&gt;
+% sphinx-build -b menesbuilder source .
+</pre></div>
+</div>
+<p>After while, you receive e-mail which includes PDF download URL.</p>
+</div>
+</div>]]></description>
+             <pubDate>Thu, 27 Mar 2014 00:00:00 +0900</pubDate>
+        </item>
+    
+    </channel>
+</rss>

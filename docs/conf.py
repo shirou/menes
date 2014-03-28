@@ -11,7 +11,7 @@ import tinkerer.paths
 project = 'mens-pdf'
 
 # Change this to the tagline of your blog
-tagline = 'Generate PDF just a sphinx-build'
+tagline = 'Generate PDF just a "sphinx-build"'
 
 # Change this to the description of your blog
 description = 'Generate PDF'
@@ -91,3 +91,4 @@ html_title = project
 html_use_index = False
 html_show_sourcelink = False
 html_add_permalinks = None
+language = "en"
