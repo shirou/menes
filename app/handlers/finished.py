@@ -96,7 +96,7 @@ class FinishedHandler(tornado.web.RequestHandler):
         m = {"path": path}
         log.info("save to tempfile", **m)
 
-        url = os.path.join(conf['worker']['menes_url'], "download", token + suffix)
+        url = os.path.join(conf['worker']['menes_url'], "api", "download", token + suffix)
 
         body = self.create_mail_body(email, url, path, language, result)
 
