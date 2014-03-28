@@ -1,4 +1,4 @@
-Menes PDF is released
+Menes PDF
 ============================
 
 menes is a web application which generates a PDF from your Sphinx
@@ -9,7 +9,7 @@ You never need to install a tex environment!
 How to Use
 ----------------
 
-You just install the sphinx extension via pip,
+At first, install the sphinx extension via pip,
 
 ::
 
@@ -30,6 +30,8 @@ Then, type this!
   % sphinx-build -b menesbuilder source .
 
 After while, you receive e-mail which includes PDF download URL.
+
+Very easty to generate Sphinx beautiful PDF.
 
 
 .. author:: default

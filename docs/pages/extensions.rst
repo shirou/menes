@@ -15,8 +15,4 @@ Installed extensions
 - sphinxcontrib-scaladomain==0.1a1
 - sphinxcontrib-seqdiag==0.6.0
 
-feel free to install other packages
-
-
-
-
+Feel free to contact when you need to install other packages.
