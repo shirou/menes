@@ -109,6 +109,7 @@ class Worker(object):
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              env=env)
         out, err = p.communicate()
+        out += err
         rc = p.returncode
 
         m = {"retcode": rc}

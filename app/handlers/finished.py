@@ -14,7 +14,7 @@ import boto
 from boto.ses.connection import SESConnection
 from jinja2 import Template
 
-MAX_BUILD_LOG_SIZE = 1024
+MAX_BUILD_LOG_SIZE = 3072
 
 
 class FinishedHandler(tornado.web.RequestHandler):
