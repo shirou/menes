@@ -37,7 +37,7 @@ class FinishedHandler(tornado.web.RequestHandler):
         t = os.path.join(os.path.dirname(__file__), "..", "mailtmpl", fname)
 
         with open(t) as f:
-            t_str = f.read()
+            t_str = unicode(f.read(), 'utf-8')
         template = Template(t_str)
 
         return template.render(url=url, build_log=build_log)

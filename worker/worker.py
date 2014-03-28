@@ -81,8 +81,13 @@ class Worker(object):
         finished_url = "/".join([conf['worker']['menes_url'], "api", "finished"])
         m = {"url": finished_url}
         self.log.info("finished", **m)
+
+        language = 'en'
+        if 'language' in req:
+            language = req['language']
+
         self.push(pdf_path, finished_url,
-                  req['email'], req['token'], status)
+                  req['email'], req['token'], status, language=language)
 
     def do_sphinx(self, root, req, conf):
         if os.path.exists(root) is False or os.path.isdir(root) is False:
@@ -149,12 +154,13 @@ class Worker(object):
         return False
 
 
-    def push(self, pdf_path, url, email, token, status):
+    def push(self, pdf_path, url, email, token, status, language='en'):
         files = {'file': open(pdf_path, 'rb')}
 
         p = {'token': token,
              'email': email,
-             'result': status}
+             'result': status,
+             'language': language}
         r = requests.post(url, files=files, params=p)
 
     def get_zipfile(self, url, token, extract_root):

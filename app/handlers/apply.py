@@ -88,7 +88,7 @@ class ApplyHandler(tornado.web.RequestHandler):
             q = self.connect_sqs(conf)
             m = Message()
 
-            req = {'url': os.path.basename(path), 'email': email, 'token': md5}
+            req = {'url': os.path.basename(path), 'email': email, 'token': md5, 'language': language}
             m.set_body(json.dumps(req))
             q.write(m)
         except Exception, e:  # TODO: specify exception
