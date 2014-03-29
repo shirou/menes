@@ -54,6 +54,13 @@ class FinishedHandler(tornado.web.RequestHandler):
                         [toaddr],
                         [fromaddr],
                         return_path=return_path)
+    def append_usagelog(self, email, result, token, conf):
+        path = conf['app']['usagelog_filepath']
+
+        buf = "\t".join([datetime.datetime.utcnow().isoformat(),
+                         "finished", email, token, result])
+        with open(path, "a") as fp:
+            fp.write(buf + "\n")
 
     def connect_ses(self, conf):
         conn = boto.ses.connect_to_region(conf['aws']['ses_region'])
@@ -107,6 +114,9 @@ class FinishedHandler(tornado.web.RequestHandler):
 
         m = {"email": email}
         log.info("sendmail done", **m)
+
+
+        self.append_usagelog(email, result, token, conf)
 
         result_encoded = json.dumps((True, "success"))
         self.write(result_encoded)

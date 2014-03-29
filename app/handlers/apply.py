@@ -35,6 +35,15 @@ class ApplyHandler(tornado.web.RequestHandler):
 
         return q
 
+    def append_usagelog(self, email, token, conf):
+        path = conf['app']['usagelog_filepath']
+
+        buf = "\t".join([datetime.datetime.utcnow().isoformat(),
+                         "apply", email, token,
+                         self.request.headers['X-Real-Ip']])
+        with open(path, "a") as fp:
+            fp.write(buf + "\n")
+
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
@@ -45,6 +54,8 @@ class ApplyHandler(tornado.web.RequestHandler):
         token = self.get_argument("token", "")
         language = self.get_argument("language", "")
         command = self.get_argument("command", "latexpdf")
+
+        self.append_usagelog(email, token, conf)
 
         if email is None or not EMAIL_REGEX.match(email):
             m = {"email": email}
