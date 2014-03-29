@@ -42,7 +42,7 @@ class FinishedHandler(tornado.web.RequestHandler):
 
         return template.render(url=url, build_log=build_log)
 
-    def send_email(self, conn, fromaddr, toaddr, body):
+    def send_email(self, conn, fromaddr, toaddr, body, return_path):
         log = ltsvlogger.LTSVLoggerAdapter(logging.getLogger())
         m = {"from": fromaddr, "to": toaddr}
         log.info("sending email", **m)
@@ -52,7 +52,8 @@ class FinishedHandler(tornado.web.RequestHandler):
                         subject,
                         body,
                         [toaddr],
-                        [fromaddr])
+                        [fromaddr],
+                        return_path=return_path)
 
     def connect_ses(self, conf):
         conn = boto.ses.connect_to_region(conf['aws']['ses_region'])
@@ -101,7 +102,8 @@ class FinishedHandler(tornado.web.RequestHandler):
         body = self.create_mail_body(email, url, path, language, result)
 
         fromaddr = conf['app']['from_addr']
-        self.send_email(conn, fromaddr, email, body)
+        return_path = conf['app']['return_path']
+        self.send_email(conn, fromaddr, email, body, return_path)
 
         m = {"email": email}
         log.info("sendmail done", **m)
