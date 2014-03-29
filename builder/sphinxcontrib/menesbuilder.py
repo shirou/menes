@@ -46,11 +46,11 @@ class MenesBuilder(Builder):
         zipfile = self.makezip(conf['root'])
         self.info("making zipfile of {}".format(conf['root']))
 
-        params = urllib.urlencode({
+        params = {
             'email': conf['email'],
             'language': conf['language'],
             'command': conf['command'],
-            })
+            }
 
         url = conf['menes_url'].rstrip("/") + "/api/apply"
 
