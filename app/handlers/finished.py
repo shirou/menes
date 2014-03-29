@@ -33,7 +33,6 @@ class FinishedHandler(tornado.web.RequestHandler):
             fname = language + ".failed.j2"
             with open(path) as f:
                 build_log = f.read(MAX_BUILD_LOG_SIZE)
-
         t = os.path.join(os.path.dirname(__file__), "..", "mailtmpl", fname)
 
         with open(t) as f:
@@ -74,6 +73,8 @@ class FinishedHandler(tornado.web.RequestHandler):
         email = self.get_argument("email", None)
         token = self.get_argument("token", None)
         language = self.get_argument("language", "en")
+        if not language:
+            language = 'en'
         result = self.get_argument("result", None)
 
         m = {"email": email, "token": token, "result": result}
