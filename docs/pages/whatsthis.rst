@@ -12,6 +12,16 @@ Privacy concern
 ----------------------------
 
 Menes code is open at `github <http:///github.com/shirou/menes>`_ and
-I guarantee to see posted files. But you may not believe. If so, You
-can create your own menes server.
+I guarantee not to see your files.
 
+The stored information are only
+
+- your ipaddress
+- email
+
+But you may not believe. You can create your own menes server. set
+your conf.py about
+
+.. code-block:: python
+
+   menes_url = "http://menes.example.com/your_menes_path/"
