@@ -27,7 +27,10 @@ Then, type this!
 ::
 
   % cd <path to top of your sphinx project>
+  if your sphinx project has separeted directory,
   % sphinx-build -b menesbuilder source .
+  or if combined,
+  % sphinx-build -b menesbuilder . .
 
 After while, you receive e-mail which includes PDF download URL.
 
