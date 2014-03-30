@@ -18,6 +18,8 @@ import tornado.ioloop
 import tornado.web
 import tornado.gen
 
+from raven.contrib.tornado import AsyncSentryClient
+
 from handlers.apply import ApplyHandler
 from handlers.finished import FinishedHandler
 from handlers.download import ZipDownloadHandler
@@ -75,6 +77,10 @@ def get_application(conf, logger):
     application = tornado.web.Application(
         handlers, **settings
     )
+
+    if "SENTRY_DSN" in os.environ:
+        application.sentry_client = AsyncSentryClient()
+
     return application
 
 

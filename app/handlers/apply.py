@@ -15,11 +15,12 @@ import ujson as json
 import tornado.web
 import boto
 from boto.sqs.message import Message
+from raven.contrib.tornado import SentryMixin
 
 EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 
-class ApplyHandler(tornado.web.RequestHandler):
+class ApplyHandler(tornado.web.RequestHandler, SentryMixin):
     def auth(self, user, password):
         '''Not implemented yet'''
         return True

@@ -9,11 +9,12 @@ import logging
 import os
 import datetime
 
+from raven.contrib.tornado import SentryMixin
 
 logger = logging.getLogger(__name__)
 
 
-class ZipDownloadHandler(tornado.web.RequestHandler):
+class ZipDownloadHandler(tornado.web.RequestHandler, SentryMixin):
     def get(self, filename, md5):
         conf = self.application.settings['config']
 

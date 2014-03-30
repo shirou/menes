@@ -68,10 +68,14 @@ class Worker(object):
                 self.queue.delete_message(msgs[0])
 
             except Exception, e:
+                from raven import Client
                 import traceback
                 m = {"e": str(e),
                      "trace": traceback.format_exc().replace("\n", " | ")}
                 self.log.error("uncaught exception", **m)
+                client = Client()
+                client.captureException()
+
                 continue
 
     def make_pdf(self, req, conf):
@@ -278,6 +282,11 @@ def parse_configfile(path):
 
     return ret
 
+def log_uncaught_exceptions(ex_cls, ex, tb):
+    client = Client()
+    client.captureMessage('uncaught!')
+
+    client.captureException()
 
 def main():
     args = parse_options()
@@ -285,6 +294,10 @@ def main():
 
     set_logger(conf)
     ensure_directory(conf['worker']['build_root'])
+
+    if "SENTRY_DSN" in os.environ:
+        from raven import Client
+        sys.excepthook = log_uncaught_exceptions
 
     w = Worker(conf)
     w.main_loop()

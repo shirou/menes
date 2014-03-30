@@ -12,12 +12,13 @@ import tempfile
 
 import boto
 from boto.ses.connection import SESConnection
+from raven.contrib.tornado import SentryMixin
 from jinja2 import Template
 
 MAX_BUILD_LOG_SIZE = 3072
 
 
-class FinishedHandler(tornado.web.RequestHandler):
+class FinishedHandler(tornado.web.RequestHandler, SentryMixin):
     def auth(self, email, token):
         return True
 
