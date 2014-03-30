@@ -35,6 +35,10 @@ class FinishedHandler(tornado.web.RequestHandler):
                 build_log = f.read(MAX_BUILD_LOG_SIZE)
         t = os.path.join(os.path.dirname(__file__), "..", "mailtmpl", fname)
 
+        if os.path.exists(t) is False:
+            # no language file. use "en"
+            return self.create_mail_body(email, url, path, "en", result)
+
         with open(t) as f:
             t_str = unicode(f.read(), 'utf-8')
         template = Template(t_str)
