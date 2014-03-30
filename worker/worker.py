@@ -13,6 +13,7 @@ import tempfile
 import shutil
 import shlex
 import subprocess
+import signal
 
 import ltsvlogger
 import ujson as json
@@ -22,7 +23,13 @@ from boto import sqs
 from boto.sqs.message import Message
 
 LOG_LEVEL = logging.INFO
+BUILD_TIMEOUT = 5
 
+class Alarm(Exception):
+    pass
+
+def alarm_handler(signum, frame):
+    raise Alarm
 
 class Worker(object):
 
@@ -110,12 +117,31 @@ class Worker(object):
         env["PATH"] += ":" + conf['worker']['texlive_bin_path']
 
         args = shlex.split(command)
-        p = subprocess.Popen(args, cwd=root, 
+        p = subprocess.Popen(args, cwd=root,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              env=env)
-        out, err = p.communicate()
-        out += err
-        rc = p.returncode
+
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(BUILD_TIMEOUT * 60)  # 5 minutes
+        out = ""
+        err = ""
+        try:
+            out, err = p.communicate()
+            out += err
+            rc = p.returncode
+            signal.alarm(0)  # reset the alarm
+        except Alarm:
+            m = {"pids": p.pid}
+            self.log.warning("sphinx process timeout", **m)
+            try:
+                os.kill(p.pid, signal.SIGKILL)
+            except OSError, e:
+                m = {"e": str(e)}
+                self.log.warning("sphinx process kill failed", **m)
+            out += "Sphinx process is failed by timeout"
+            out += err
+            rc = 99
+
 
         m = {"retcode": rc}
         self.log.info("do_sphinx finished", **m)
