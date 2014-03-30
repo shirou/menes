@@ -118,6 +118,7 @@ class Worker(object):
 
         args = shlex.split(command)
         p = subprocess.Popen(args, cwd=root,
+                             stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              env=env)
 
@@ -126,7 +127,7 @@ class Worker(object):
         out = ""
         err = ""
         try:
-            out, err = p.communicate()
+            out, err = p.communicate(input="\n"*100)
             out += err
             rc = p.returncode
             signal.alarm(0)  # reset the alarm
@@ -138,7 +139,8 @@ class Worker(object):
             except OSError, e:
                 m = {"e": str(e)}
                 self.log.warning("sphinx process kill failed", **m)
-            out += "Sphinx process is failed by timeout"
+            out += "Sphinx process failed due to the timeout\n"
+            out += "Please check your conf.py. ex: language, latex_conf"
             out += err
             rc = 99
 
