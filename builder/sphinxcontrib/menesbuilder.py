@@ -56,9 +56,12 @@ class MenesBuilder(Builder):
 
         self.info("Posting to {}".format(url))
 
-        files = {'file': open(zipfile, 'rb')}
+        fp = open(zipfile, 'rb')
+        files = {'file': fp}
         r = requests.post(url, files=files, params=params)
 
+        self.info("done")
+        fp.close()
         os.remove(zipfile)
 
     def build(self, docnames, summary=None, method='update'):
