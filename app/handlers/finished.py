@@ -15,7 +15,7 @@ from boto.ses.connection import SESConnection
 from raven.contrib.tornado import SentryMixin
 from jinja2 import Template
 
-MAX_BUILD_LOG_SIZE = 3072
+MAX_BUILD_LOG_SIZE = 40960
 
 
 class FinishedHandler(tornado.web.RequestHandler, SentryMixin):
