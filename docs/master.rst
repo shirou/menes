@@ -8,4 +8,6 @@ Sitemap
    pages/whatsthis
    pages/extensions
    pages/contacts
+   pages/fonts
+   pages/settings
 

@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Generate PDF">
         <meta name="viewport" content="width=device-width">
-        <title>Contacts &mdash; mens-pdf</title>
+        <title>Sample settings &mdash; mens-pdf</title>
             <link rel="stylesheet" href="../_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="../_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="../_static/main.css" type="text/css">
@@ -67,19 +67,50 @@
                   <a href="extensions.html">Installed extensions</a>
                 </li>
               <li class="main-nav">
-                  <a href="#">Contacts</a>
+                  <a href="contacts.html">Contacts</a>
                 </li>
               <li class="main-nav">
                   <a href="fonts.html">fonts</a>
                 </li>
               <li class="main-nav">
-                  <a href="settings.html">Sample settings</a>
+                  <a href="#">Sample settings</a>
                 </li>
               </ul>
           </nav><div class="main-container"><div class="main wrapper clearfix"><article>
-    <div class="section" id="contacts">
-<h1>Contacts</h1>
-<p><a class="reference external" href="mailto:admin&#37;&#52;&#48;menes-pdf&#46;info">admin<span>&#64;</span>menes-pdf<span>&#46;</span>info</a></p>
+    <div class="section" id="sample-settings">
+<h1>Sample settings</h1>
+<div class="section" id="oneside">
+<h2>oneside</h2>
+<p>If you do not want to insert empty page before chapter, specify oneside.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">latex_elements</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;extraclassoptions&#39;</span><span class="p">:</span> <span class="s">&#39;,openany,oneside&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="blockdiag">
+<h2>blockdiag</h2>
+<p>If you want to use blockdiag family, please specify correct font path.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">blockdiag_fontpath</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;C:\Windows\Fonts\msmincho.ttc&quot;</span><span class="p">,</span>
+                      <span class="s">&quot;/usr/share/fonts/truetype/mplus/mplus-2p-bold.ttf&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="japanese">
+<h2>Japanese</h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">menes_command</span> <span class="o">=</span> <span class="s">&quot;latexpdfja&quot;</span>
+<span class="n">language</span> <span class="o">=</span> <span class="s">&#39;ja&#39;</span>
+<span class="n">latex_docclass</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;manual&#39;</span><span class="p">:</span> <span class="s">&#39;jreport&#39;</span><span class="p">}</span>
+<span class="n">latex_elements</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;pointsize&#39;</span><span class="p">:</span> <span class="s">&#39;11pt&#39;</span><span class="p">,</span>
+    <span class="s">&#39;papersize&#39;</span><span class="p">:</span> <span class="s">&#39;a4paper&#39;</span><span class="p">,</span>
+    <span class="s">&#39;transition&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+    <span class="s">&#39;extraclassoptions&#39;</span><span class="p">:</span> <span class="s">&#39;,openany,oneside&#39;</span><span class="p">,</span>
+    <span class="s">&#39;babel&#39;</span><span class="p">:</span> <span class="s">&#39;</span><span class="se">\\</span><span class="s">usepackage[japanese]{babel}&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 
     <div class="postmeta">
