@@ -14,6 +14,7 @@ import shutil
 import shlex
 import subprocess
 import signal
+import traceback
 
 import ltsvlogger
 import ujson as json
@@ -57,7 +58,6 @@ class Worker(object):
                     m = msgs[0]
                     req = json.loads(m.get_body())
                 except ValueError, e:
-                    import traceback
                     m = {"e": str(e),
                          "trace": traceback.format_exc().replace("\n", " | ")}
                     self.log.error("parse sqs message failed", **m)
@@ -69,7 +69,6 @@ class Worker(object):
 
             except Exception, e:
                 from raven import Client
-                import traceback
                 m = {"e": str(e),
                      "trace": traceback.format_exc().replace("\n", " | ")}
                 self.log.error("uncaught exception", **m)
@@ -86,7 +85,13 @@ class Worker(object):
         if zipfile_path is False:
             return False
 
-        path = self.extract(zipfile_path, conf['worker']['build_root'])
+        try:
+            path = self.extract(zipfile_path, conf['worker']['build_root'])
+        except Exception ,e:
+            m = {"e": str(e),
+                 "trace": traceback.format_exc().replace("\n", " | ")}
+            self.log.error("Extract error!!!", **m)
+            return  # XXXXXXX
         status, pdf_path = self.do_sphinx(path, req, conf)
 
         finished_url = "/".join([conf['worker']['menes_url'], "api", "finished"])
@@ -226,10 +231,23 @@ class Worker(object):
         dest_dir = tempfile.mkdtemp(dir=extract_root)
 
         with zipfile.ZipFile(zipfile_path) as zf:
-            zf.extractall(dest_dir)
+            self.extractall(zf, dest_dir)
+            #zf.extractall(dest_dir)
 
         return dest_dir
 
+    def extractall(self, zf, dest_dir):
+        for info in zf.infolist():
+            try:
+                fname = info.filename.decode('utf-8')
+            except:
+                try:
+                    fname = info.filename.decode('cp932')
+                except:
+                    continue  # XXXX FIXME
+
+            info.filename = fname
+            zf.extract(info, dest_dir)
 
 def set_logger(conf):
     log_dir = conf['worker']['log_directory']
