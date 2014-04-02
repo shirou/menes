@@ -58,7 +58,7 @@ class ApplyHandler(tornado.web.RequestHandler, SentryMixin):
 
         self.append_usagelog(email, token, conf)
 
-        if email is None or not EMAIL_REGEX.match(email):
+        if not email:
             m = {"email": email}
             log.info("email is null or invalid", **m)
             self.send_error(400)
