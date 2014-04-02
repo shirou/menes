@@ -17,7 +17,7 @@ classifiers = [
 
 setup(
     name='sphinxcontrib-menesbuilder',
-    version="0.2",
+    version="0.3",
     description='menesbuilder is a Sphinx extension for menes PDF generates web application',
     long_description=open("README.rst").read(),
     classifiers=classifiers,
