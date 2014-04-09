@@ -47,8 +47,11 @@ def log_func(handler):
         log_method = logging.error
 
     request_time = 1000.0 * handler.request.request_time()
+    ua = ""
+    if 'User-Agent' in handler.request.headers:
+        ua = handler.request.headers['User-Agent']
     buf = ["status:" + str(status), "method:" + handler.request.method, "uri:" + handler.request.uri,
-        "ua:" + handler.request.headers['User-Agent'],
+        "ua:" + ua,
         "host:" + handler.request.remote_ip, "reqtime:%.2fms" % request_time
     ]
     log_message = "\t".join(buf)
