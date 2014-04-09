@@ -8,7 +8,7 @@ import tinkerer.paths
 # **************************************************************
 
 # Change this to the name of your blog
-project = 'mens-pdf'
+project = 'menes-pdf'
 
 # Change this to the tagline of your blog
 tagline = 'Generate PDF just a "sphinx-build"'
