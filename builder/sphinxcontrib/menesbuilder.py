@@ -60,9 +60,14 @@ class MenesBuilder(Builder):
         files = {'file': fp}
         r = requests.post(url, files=files, params=params)
 
-        self.info("done")
         fp.close()
         os.remove(zipfile)
+
+        if r.status_code == 200:
+            self.info("done")
+        else:
+            self.warn("post failed {}: {}".format(r.status_code, r.reason))
+
 
     def build(self, docnames, summary=None, method='update'):
         if self.config.menes_email is None:
