@@ -39,9 +39,9 @@ class ApplyHandler(tornado.web.RequestHandler, SentryMixin):
     def append_usagelog(self, email, token, conf):
         path = conf['app']['usagelog_filepath']
 
-        buf = "\t".join([datetime.datetime.utcnow().isoformat(),
-                         "apply", email, token,
-                         self.request.headers['X-Real-Ip']])
+        buf = "\t".join(["time:" + datetime.datetime.utcnow().isoformat(),
+                         "status:apply", "email:" + email, "token:" + token,
+                         "addr:" + self.request.headers['X-Real-Ip']])
         with open(path, "a") as fp:
             fp.write(buf + "\n")
 

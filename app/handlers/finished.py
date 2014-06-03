@@ -61,8 +61,9 @@ class FinishedHandler(tornado.web.RequestHandler, SentryMixin):
     def append_usagelog(self, email, result, token, conf):
         path = conf['app']['usagelog_filepath']
 
-        buf = "\t".join([datetime.datetime.utcnow().isoformat(),
-                         "finished", email, token, result])
+        buf = "\t".join(["time:" + datetime.datetime.utcnow().isoformat(),
+                         "status:finished", "email:" + email, 
+                         "token:" + token, "result:" + result])
         with open(path, "a") as fp:
             fp.write(buf + "\n")
 
